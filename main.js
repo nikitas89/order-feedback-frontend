@@ -1,42 +1,42 @@
-Vue.component('feed-button', {
+  Vue.component('feed-button', {
   props:['order'],
       data: function() {
         return {showModal: false,
           // order: this.order,
         order_details: [{test:'test'}]
   }},
-template:`<div v-if="order.feedback_submitted"></div>
+  template:`<div v-if="order.feedback_submitted"></div>
       <div style="display: inline-block" v-else>
         <!-- <button v-on:click=""> Feedback </button> -->
         <button @click="showModal = true; getOrderDetails() ">Feedback</button>
         <modal v-if="showModal" :order_id="order" :order_details=order_details @close="showModal = false">
           <h3 slot="header">Hello Beautiful!</h3>
         </modal>
-      </div>`
-,
-methods:{
-getOrderDetails: function() {
+      </div>`,
+  methods:{
+  getOrderDetails: function() {
   console.log(this.order.id);
   console.log(this.order)
   var id  = this.order.id
-  this.$http.get(`http://localhost:3000/orders/${id}`).then(response => {
+  this.$http.get(`https://ordiez.herokuapp.com/orders/${id}`).then(response => {
     this.order_details = response.body;
     console.log(response.body.order_items)
   }, response => {
     console.log('error')
   })
   }
-}//end methods
-})
+  }//end methods
+  })
 
-Vue.component('modal', {
+  Vue.component('modal', {
   // template: '#modal-template'
      props: ['order_id', 'order_details'],
      data: function () {
        return { id: this.order_id,
                 detailed_order: this.order_details,
                 mealfeedbacks: [],
-                delivery: ''
+                delivery: '',
+                sentStatus:''
         }
      },
   template: `    <transition name="modal">
@@ -44,12 +44,10 @@ Vue.component('modal', {
           <div class="modal-wrapper">
             <div class="modal-container">
               <div class="modal-header">
-                <slot name="header">
-                  Hi Beautiful! How was the Order GO123 at 1.30pm?
-                </slot>
               </div>
               <div class="modal-body" >
                 <slot name="body">
+                  <p style="color:red;">{{sentStatus}}</p>
                   {{order_id.delivery_time}}
                   {{order_id.delivery_date}}
                   {{order_id.order_id}}
@@ -80,38 +78,26 @@ Vue.component('modal', {
         </div>
       </transition>`
       ,
-        methods:{
-          sendFeedback: function() {
-            this.order_details.order_items.forEach((item)=>{
-              var id = item.id
-              var value = item.value
-              // console.log(id, value);
-              value? this.mealfeedbacks.push({id, value}): ""
-            })
-            console.log(this.mealfeedbacks, "this.mealfeedbacks");
-            feedbacks:this.mealfeedbacks
-            delivery: this.delivery
-            var id  = this.id.id
-            this.$http.post(`http://localhost:3000/orders/${id}/feedbacks`, {delivery:this.delivery, feedbacks:this.mealfeedbacks})
-            .then ((response) => {
-
-              response.ok? $emit('close') : ""
-            },response => {
-              console.log('oops errors!');
-              console.log(response.statusText);
-            })
-        }}
-      })
-// var vm2 = new Vue({
-//     el: '#vueApp',
-//     data: {
-//       delivery: '' },
-//       methods:{
-//         checkWebsite: function() {
-//                 delivery: this.delivery
-    //       this.$http.post('http://localhost:3000/orders/:order_id/feedbacks', {
-//     // }, function (data, status, request) {
-//     // })
-//       }
-//       }
-//   })
+    methods:{
+      sendFeedback: function() {
+        this.order_details.order_items.forEach((item)=>{
+          var id = item.id
+          var value = item.value
+          // console.log(id, value);
+          value? this.mealfeedbacks.push({id, value}): ""
+        })
+        console.log(this.mealfeedbacks, "this.mealfeedbacks");
+        feedbacks:this.mealfeedbacks
+        delivery: this.delivery
+        var id  = this.id.id
+        this.$http.post(`https://ordiez.herokuapp.com/orders/${id}/feedbacks`,
+        {delivery:this.delivery, feedbacks:this.mealfeedbacks})
+        .then ((response) => {
+          response.ok? this.sentStatus = "Your feedback was submitted, thanks!" : ""
+        },response => {
+          this.sentStatus = "Your feedback could not be submitted at this time"
+          console.log('oops errors!');
+          console.log(response.statusText);
+        })
+    }}
+  })
