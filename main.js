@@ -15,12 +15,9 @@
       </div>`,
   methods:{
   getOrderDetails: function() {
-  console.log(this.order.id);
-  console.log(this.order)
   var id  = this.order.id
   this.$http.get(`https://ordiez.herokuapp.com/orders/${id}`).then(response => {
     this.order_details = response.body;
-    console.log(response.body.order_items)
   }, response => {
     console.log('error')
   })

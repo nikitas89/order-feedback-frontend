@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>Welcome to Ordiez</title>
   <meta charset="utf-8">
@@ -12,33 +13,30 @@
   <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.3.4"></script>
 </head>
 <body>
-
-
   <div id="myVueApp1">
-
     <ol>
       <li v-for="order_id in order_ids">
-      {{ order_id.order_id }}
-      <feed-button :order="order_id" ></feed-button>
+        {{ order_id.order_id }}
+        <feed-button :order="order_id"></feed-button>
       </li>
     </ol>
   </div>
   <script>
-
-  var vm1 = new Vue({
-    el: '#myVueApp1',
-    data: {
-      // showModal: false,
-      order_ids: [
-        {   order_id: 'GO123' },
-      ]}, mounted() {
+    var vm1 = new Vue({
+      el: '#myVueApp1',
+      data: {
+        order_ids: [{
+          order_id: 'GO123'
+        }, ]
+      },
+      mounted() {
         this.$http.get('https://ordiez.herokuapp.com/orders').then(response => {
           this.order_ids = response.body;
-          // console.log(response.body)
         }, response => {
           console.log('error')
-    })}
-  })
+        })
+      }
+    })
   </script>
 </body>
 </html>
