@@ -5,7 +5,7 @@
           // order: this.order,
         order_details: [{test:'test'}]
   }},
-  template:`<div v-if="order.feedback_submitted"></div>
+  template:`<div v-if="order.feedback_submitted">Thank you!</div>
       <div style="display: inline-block" v-else>
         <!-- <button v-on:click=""> Feedback </button> -->
         <button @click="showModal = true; getOrderDetails() ">Feedback</button>
