@@ -1,4 +1,4 @@
-# Nikita Sinhal's Ordiez-Feedback
+# Nikita Sinhal's Delivery Order Feedback
 ### Github hosted: [https://nikitas89.github.io/order-feedback-frontend/](https://nikitas89.github.io/order-feedback-frontend/)
 
 ### Access api on heroku:
